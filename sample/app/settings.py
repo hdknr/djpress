@@ -119,3 +119,10 @@ try:
     LOGGING = logs.LOGGING
 except:
     pass
+
+try:
+    from app.databases import DatabaseRouter
+    DATABASES.update(DatabaseRouter.confs())
+    DATABASE_ROUTERS = [DatabaseRouter.router()]
+except:
+    pass
