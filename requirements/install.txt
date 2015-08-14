@@ -11,3 +11,4 @@ furl
 pykf
 Markdown
 ordereddict
+gunicorn
