@@ -100,3 +100,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+####
+
+LANGUAGE_CODE = 'ja'
+TIME_ZONE = 'Asia/Tokyo'
+INSTALLED_APPS += (
+    'djpress',
+)
+
+try:
+    from local_settings import configure
+    configure(globals())
+except:
+    pass
+
+try:
+    from app import logs
+    LOGGING = logs.LOGGING
+except:
+    pass

@@ -1,0 +1,21 @@
+DEBUG = True
+ALLOWED_HOSTS = ['yoursite.net', 'wp.deb', ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'localhost',
+        'NAME': 'your_wordpress',
+        'USER': 'your_wordpress',
+        'PASSWORD': 'your_wordpress',
+        # 'TEST_CHARSET': 'utf8',
+        # 'TEST_DATABASE_COLLATION': 'utf8_general_ci',
+    },
+}
+
+
+def configure(conf):
+    conf.update(dict(
+        (k, v) for k, v in globals().items()
+        if not k.startswith('_')
+    ))
