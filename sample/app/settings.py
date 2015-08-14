@@ -126,3 +126,8 @@ try:
     DATABASE_ROUTERS = [DatabaseRouter.router()]
 except:
     pass
+
+DJPRESS_KEY = 'this is the secret.'
+MIDDLEWARE_CLASSES += (
+    'djpress.middleware.Middleware',
+)

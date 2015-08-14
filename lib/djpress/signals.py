@@ -1,11 +1,16 @@
 ''' signals and handlers
 '''
 
+from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from wordpress import WpUsers
+from django.contrib.auth.signals import user_logged_in
+
 import uuid
+import hashlib
+
+from wordpress import WpUsers
 
 
 @receiver(post_save, sender=User)
@@ -34,3 +39,19 @@ def user_saved(sender=None, instance=None, **kwargs):
 def user_deleted(sender=None, instance=None, **kwargs):
     if instance:
         WpUsers.objects.filter(user_login=instance.username).delete()
+
+
+@receiver(user_logged_in)
+def user_loggedin(sender=None, request=None, user=None, **kwargs):
+    wp_user = user and WpUsers.objects.filter(user_login=user.username).first()
+    if not wp_user:
+        return
+
+    key = getattr(settings, 'DJPRESS_KEY', None)
+    if key:
+        session_key = request.session.session_key
+        digest = hashlib.sha256("{0}{1}{2}".format(
+            session_key, user.id, key)).hexdigest()
+    else:
+        digest = ''
+    request.session['wp_user'] = "{0}:{1}".format(wp_user.id, digest)
