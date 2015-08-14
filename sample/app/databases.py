@@ -13,8 +13,8 @@ class DatabaseRouter(object):
     }
 
     def get_database(self, model, **hints):
-        for db, apps in self._maps.items():
-            if model._meta.app_label in apps:
+        for db, conf in self._maps.items():
+            if model._meta.app_label in conf['apps']:
                 return db
         return 'default'
 
