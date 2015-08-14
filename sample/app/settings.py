@@ -107,6 +107,9 @@ TIME_ZONE = 'Asia/Tokyo'
 INSTALLED_APPS += (
     'djpress',
 )
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets/')
+STATIC_URL = '/assets/'
+
 
 try:
     from local_settings import configure
