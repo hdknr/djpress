@@ -133,4 +133,5 @@ except:
 DJPRESS_KEY = 'this is the secret.'
 MIDDLEWARE_CLASSES += (
     'djpress.middleware.Middleware',
+    'app.middleware.SettingsMiddleware',
 )

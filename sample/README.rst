@@ -14,10 +14,14 @@ Nginx
       ip_hash;
       server unix:/vagrant/projects/wpauth/djpress/sample/logs/gunicorn.sock;
     }
-    
+
     server {
         //... port and other settings
  
+        location /apps/assets {
+            alias /vagrant/projects/wpauth/djpress/sample/assets;
+        }  
+        
         location /apps {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header Host $http_host;
