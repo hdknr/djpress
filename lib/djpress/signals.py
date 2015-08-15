@@ -41,17 +41,19 @@ def user_deleted(sender=None, instance=None, **kwargs):
         WpUsers.objects.filter(user_login=instance.username).delete()
 
 
-@receiver(user_logged_in)
-def user_loggedin(sender=None, request=None, user=None, **kwargs):
-    wp_user = user and WpUsers.objects.filter(user_login=user.username).first()
-    if not wp_user:
-        return
-
+def set_wp_user(request, id):
     key = getattr(settings, 'DJPRESS_KEY', None)
     if key:
         session_key = request.session.session_key
         digest = hashlib.sha256("{0}{1}{2}".format(
-            session_key, user.id, key)).hexdigest()
+            session_key, id, key)).hexdigest()
     else:
         digest = ''
-    request.session['wp_user'] = "{0}:{1}".format(wp_user.id, digest)
+    request.session['wp_user'] = "{0}:{1}".format(id, digest)
+
+
+@receiver(user_logged_in)
+def user_loggedin(sender=None, request=None, user=None, **kwargs):
+    wp_user = user and WpUsers.objects.filter(user_login=user.username).first()
+    if wp_user:
+        set_wp_user(request, wp_user.id)
