@@ -3,6 +3,7 @@
 
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
+from django.db import transaction
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
@@ -16,28 +17,40 @@ from wordpress import WpUsers
 @receiver(post_save, sender=User)
 def user_saved(sender=None, instance=None, **kwargs):
     if instance:
-        user = WpUsers.objects.filter(
+        meta_value = 10 if instance.is_superuser else 1
+        wpuser = WpUsers.objects.filter(
             user_login=instance.username).first()
-        if not user:
-            user = WpUsers.objects.create(
-                user_login=instance.username,
-                user_nicename=instance.username,
-                user_status=not instance.is_active and 1 or 0,
-                user_pass=uuid.uuid1().hex,
-                user_registered=instance.date_joined,
-                user_email=instance.email,
-                display_name=instance.username,
-                )
-        else:
-            user.user_status = not instance.is_active and 1 or 0
-            user.user_email = instance.email
-            user.display_name = instance.username
-            user.save()
 
-        if not user.wpusermeta_set.filter(meta_key='wp_user_level').exists():
-            user.wpusermeta_set.create(
-                meta_key='wp_user_level',
-                meta_value=10 if instance.is_superuser else 1)
+        def setmeta():
+            wpuser = WpUsers.objects.filter(
+                user_login=instance.username).first()
+            if not wpuser:
+                return
+
+            if wpuser.wpusermeta_set.filter(
+                    meta_key='wp_user_level').exists():
+                return
+
+            wpuser.wpusermeta_set.create(
+                meta_key='wp_user_level', meta_value=meta_value)
+
+        with transaction.atomic():
+            transaction.on_commit(setmeta)
+            if not wpuser:
+                wpuser = WpUsers.objects.create(
+                    user_login=instance.username,
+                    user_nicename=instance.username,
+                    user_status=not instance.is_active and 1 or 0,
+                    user_pass=uuid.uuid1().hex,
+                    user_registered=instance.date_joined,
+                    user_email=instance.email,
+                    display_name=instance.username,
+                    )
+            else:
+                wpuser.user_status = not instance.is_active and 1 or 0
+                wpuser.user_email = instance.email
+                wpuser.display_name = instance.username
+                wpuser.save()
 
 
 @receiver(post_delete, sender=User)
