@@ -19,7 +19,7 @@ def user_saved(sender=None, instance=None, **kwargs):
         user = WpUsers.objects.filter(
             user_login=instance.username).first()
         if not user:
-            WpUsers.objects.create(
+            user = WpUsers.objects.create(
                 user_login=instance.username,
                 user_nicename=instance.username,
                 user_status=not instance.is_active and 1 or 0,
@@ -33,6 +33,11 @@ def user_saved(sender=None, instance=None, **kwargs):
             user.user_email = instance.email
             user.display_name = instance.username
             user.save()
+
+        if not user.wpusermeta_set.filter(meta_key='wp_user_level').exists():
+            user.wpusermeta_set.create(
+                meta_key='wp_user_level',
+                meta_value=10 if instance.is_superuser else 1)
 
 
 @receiver(post_delete, sender=User)

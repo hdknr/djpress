@@ -1,11 +1,12 @@
 from django.contrib import admin
-from django.core.urlresolvers import reverse
 from django.apps import apps
 
 
-def register(app_fullname, admins, ignore_models=[]):
-    app_label = app_fullname.split('.')[-2:][0]
-    for n, model in apps.get_app_config(app_label).models.items():
+def register(module_name, admins, ignore_models=[]):
+    ''' Regiter Admin UI  '''
+    app_label = module_name.split('.')[-2:][0]
+    for model in apps.get_app_config(app_label).get_models():
+
         if model.__name__ in ignore_models:
             continue
         name = "%sAdmin" % model.__name__
@@ -17,13 +18,28 @@ def register(app_fullname, admins, ignore_models=[]):
             )
 
         if admin_class.list_display == ('__str__',):
-            excludes = getattr(admin_class, 'list_excludes', ())
             admin_class.list_display = tuple(
-                [f.name for f in model._meta.fields
-                 if f.name not in excludes])
+                [f.name for f in model._meta.fields])
+
+        additionals = getattr(admin_class, 'list_additionals', ())
+        excludes = getattr(admin_class, 'list_excludes', ())
+        admin_class.list_display = tuple(
+            [n for n in admin_class.list_display
+             if n not in excludes]) + additionals
 
         admin.site.register(model, admin_class)
 
 
-register( __name__, globals())
-    
+class WpUsersAdmin(admin.ModelAdmin):
+    search_fields = ('user_login', 'user_email', )
+    date_hierarchy = 'user_registered'
+    list_filter = ('user_status', )
+    list_excludes = ('id', )
+
+
+class WpUsermetaAdmin(admin.ModelAdmin):
+    search_fields = ('user__user_login', )
+    raw_id_fields = ('user', )
+    list_filter = ('meta_key', )
+
+register(__name__, globals())

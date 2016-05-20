@@ -2,11 +2,14 @@
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
+#   * Remove `managed = False` lines if you wish to allow Django to create,
+#   * modify, and delete the table
+# Feel free to rename the models,
+#   * but don't rename db_table values or field names.
 #
-# Also note: You'll have to insert the output of 'django-admin sqlcustom [app_label]'
-# into your database.
+# Also note: You'll have to insert the output of
+# 'django-admin sqlcustom [app_label]' into your database.
+
 from __future__ import unicode_literals
 
 from django.db import models
@@ -155,7 +158,8 @@ class WpTerms(models.Model):
 
 class WpUsermeta(models.Model):
     umeta_id = models.BigIntegerField(primary_key=True)
-    user_id = models.BigIntegerField()
+    # user_id = models.BigIntegerField()
+    user = models.ForeignKey('WpUsers', db_column='user_id')
     meta_key = models.CharField(max_length=255, blank=True, null=True)
     meta_value = models.TextField(blank=True, null=True)
 
@@ -163,9 +167,14 @@ class WpUsermeta(models.Model):
         managed = False
         db_table = 'wp_usermeta'
 
+    def __unicode__(self):
+        return u"{} - {}:{}".format(
+            self.user and self.user.__unicode__(),
+            self.meta_key, self.meta_value)
+
 
 class WpUsers(models.Model):
-    id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id = models.BigIntegerField(db_column='ID', primary_key=True)
     user_login = models.CharField(max_length=60)
     user_pass = models.CharField(max_length=64)
     user_nicename = models.CharField(max_length=50)
@@ -179,3 +188,6 @@ class WpUsers(models.Model):
     class Meta:
         managed = False
         db_table = 'wp_users'
+
+    def __unicode__(self):
+        return self.user_login
