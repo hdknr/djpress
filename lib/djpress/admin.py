@@ -42,4 +42,10 @@ class WpUsermetaAdmin(admin.ModelAdmin):
     raw_id_fields = ('user', )
     list_filter = ('meta_key', )
 
+
+class WpPostsAdmin(admin.ModelAdmin):
+    date_hierarchy = 'post_modified'
+    list_filter = ['post_type', 'post_mime_type', 'post_status', ]
+    list_excludes = ['post_date_gmt', 'post_modified_gmt', ]
+
 register(__name__, globals())
