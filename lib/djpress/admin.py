@@ -48,4 +48,9 @@ class WpPostsAdmin(admin.ModelAdmin):
     list_filter = ['post_type', 'post_mime_type', 'post_status', ]
     list_excludes = ['post_date_gmt', 'post_modified_gmt', ]
 
+
+class WpOptionsAdmin(admin.ModelAdmin):
+    list_filter = ['autoload', ]
+    search_fields = ['option_name', 'option_value', ]
+
 register(__name__, globals())
