@@ -27,12 +27,12 @@ class WpCommentmeta(models.Model):
 
 
 class WpComments(models.Model):
-    comment_id = models.BigIntegerField(db_column='comment_ID', primary_key=True)  # Field name made lowercase.
-    comment_post_id = models.BigIntegerField(db_column='comment_post_ID')  # Field name made lowercase.
+    comment_id = models.BigIntegerField(db_column='comment_ID', primary_key=True)  # Field name made lowercase.  # NOQA
+    comment_post_id = models.BigIntegerField(db_column='comment_post_ID')  # Field name made lowercase.  # NOQA
     comment_author = models.TextField()
     comment_author_email = models.CharField(max_length=100)
     comment_author_url = models.CharField(max_length=200)
-    comment_author_ip = models.CharField(db_column='comment_author_IP', max_length=100)  # Field name made lowercase.
+    comment_author_ip = models.CharField(db_column='comment_author_IP', max_length=100)  # Field name made lowercase.   # NOQA
     comment_date = models.DateTimeField()
     comment_date_gmt = models.DateTimeField()
     comment_content = models.TextField()
@@ -91,7 +91,7 @@ class WpPostmeta(models.Model):
 
 
 class WpPosts(models.Model):
-    id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.
+    id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.     # NOQA
     post_author = models.BigIntegerField()
     post_date = models.DateTimeField()
     post_date_gmt = models.DateTimeField()
@@ -191,3 +191,8 @@ class WpUsers(models.Model):
 
     def __unicode__(self):
         return self.user_login
+
+    def set_meta(self, meta_key, meta_value):
+        if self.wpusermeta_set.filter(meta_key=meta_key).update(meta_value=meta_value) < 1:      # NOQA
+            self.wpusermeta_set.create(
+                meta_key=meta_key, meta_value=meta_value)

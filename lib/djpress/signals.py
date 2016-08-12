@@ -12,12 +12,13 @@ import uuid
 import hashlib
 
 from wordpress import WpUsers
+import phpserialize
 
 
 @receiver(post_save, sender=User)
 def user_saved(sender=None, instance=None, **kwargs):
     if instance:
-        meta_value = 10 if instance.is_superuser else 1
+        user_level = 10 if instance.is_superuser else 1
         wpuser = WpUsers.objects.filter(
             user_login=instance.username).first()
 
@@ -27,12 +28,15 @@ def user_saved(sender=None, instance=None, **kwargs):
             if not wpuser:
                 return
 
-            if wpuser.wpusermeta_set.filter(
-                    meta_key='wp_user_level').exists():
-                return
+            wpuser.set_meta('wp_user_level',  user_level)
 
-            wpuser.wpusermeta_set.create(
-                meta_key='wp_user_level', meta_value=meta_value)
+            if user_level == 10:
+                cap = {
+                    'contributer': True,
+                    'administrator': True, }
+                wpuser.set_meta(
+                    'wp_capabilities',
+                    phpserialize.dumps(cap))
 
         with transaction.atomic():
             transaction.on_commit(setmeta)
