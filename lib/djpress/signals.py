@@ -27,8 +27,15 @@ def user_saved(sender=None, instance=None, **kwargs):
                 user_login=instance.username).first()
             if not wpuser:
                 return
-
+            nickname = u"{} {}".format(
+                instance.last_name or '',
+                instance.first_name or '',)
+            if nickname == u' ':
+                nickname = instance.username
             wpuser.set_meta('wp_user_level',  user_level)
+            wpuser.set_meta('first_name',  instance.first_name)
+            wpuser.set_meta('last_name',  instance.last_name)
+            wpuser.set_meta('nickname',  nickname)
 
             if user_level == 10:
                 cap = {
