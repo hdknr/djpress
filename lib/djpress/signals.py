@@ -22,11 +22,11 @@ def user_saved(sender=None, instance=None, **kwargs):
         wpuser = WpUsers.objects.filter(
             user_login=instance.username).first()
 
-        nickname = u"{} {}".format(
+        display_name = u"{} {}".format(
             instance.last_name or '',
             instance.first_name or '',)
-        if nickname == u' ':
-            nickname = instance.username
+        if display_name == u' ':
+            display_name = instance.username
 
         def setmeta():
             wpuser = WpUsers.objects.filter(
@@ -37,7 +37,7 @@ def user_saved(sender=None, instance=None, **kwargs):
             wpuser.set_meta('wp_user_level',  user_level)
             wpuser.set_meta('first_name',  instance.first_name)
             wpuser.set_meta('last_name',  instance.last_name)
-            wpuser.set_meta('nickname',  nickname)
+            wpuser.set_meta('nickname',  display_name)
 
             if user_level == 10:
                 cap = {
@@ -57,12 +57,12 @@ def user_saved(sender=None, instance=None, **kwargs):
                     user_pass=uuid.uuid1().hex,
                     user_registered=instance.date_joined,
                     user_email=instance.email,
-                    display_name=nickname,
+                    display_name=display_name,
                     )
             else:
                 wpuser.user_status = not instance.is_active and 1 or 0
                 wpuser.user_email = instance.email
-                wpuser.display_name = nickname
+                wpuser.display_name = display_name
                 wpuser.save()
 
 
