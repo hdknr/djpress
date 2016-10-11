@@ -8,4 +8,8 @@ class Middleware(object):
         '''
         wp_user = request.session.get('wp_user', None)
         response.set_cookie('WP_USER', wp_user or '')
+        try:
+            response.set_cookie('USER_ID', request.user.id)
+        except:
+            pass
         return response
