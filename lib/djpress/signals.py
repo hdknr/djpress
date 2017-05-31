@@ -73,7 +73,7 @@ def user_deleted(sender=None, instance=None, **kwargs):
 
 
 def set_wp_user(request, id):
-    key = getattr(settings, 'DJPRESS_KEY', None)
+    key = getattr(settings, 'DJPRESS_KEY', settings.SECRET_KEY)
     if key:
         session_key = request.session.session_key
         digest = hashlib.sha256("{0}{1}{2}".format(
