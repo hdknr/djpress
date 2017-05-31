@@ -1,8 +1,16 @@
+# coding: utf-8
+import django
 import logging
 logger = logging.getLogger()
 
+Base = object
 
-class Middleware(object):
+if django.VERSION >= (1, 11):
+    from django.utils.deprecation import MiddlewareMixin as Base
+
+
+class Middleware(Base):
+
     def process_response(self, request, response):
         ''' if user has been logged out, no session data , so no 'wp_user'
         '''
