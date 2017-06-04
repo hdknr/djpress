@@ -7,6 +7,3 @@ from django.utils.translation import (
 class AppConfig(DjangoAppConfig):
     name = 'djpress'
     verbose_name = _("Djpress")
-
-    def ready(self):
-        import signals

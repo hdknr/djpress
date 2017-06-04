@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.apps import apps
+from . import models
 
 
 def register(module_name, admins, ignore_models=[]):
@@ -30,11 +31,16 @@ def register(module_name, admins, ignore_models=[]):
         admin.site.register(model, admin_class)
 
 
+class WpUsermetaAdminInline(admin.TabularInline):
+    model = models.WpUsermeta
+
+
 class WpUsersAdmin(admin.ModelAdmin):
     search_fields = ('user_login', 'user_email', )
     date_hierarchy = 'user_registered'
     list_filter = ('user_status', )
     list_excludes = ('id', )
+    inlines = [WpUsermetaAdminInline, ]
 
 
 class WpUsermetaAdmin(admin.ModelAdmin):

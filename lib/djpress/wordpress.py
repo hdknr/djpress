@@ -2,7 +2,7 @@
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
-#   * Remove `managed = False` lines if you wish to allow Django to create,
+#   * Remove `abstract = True` lines if you wish to allow Django to create,
 #   * modify, and delete the table
 # Feel free to rename the models,
 #   * but don't rename db_table values or field names.
@@ -22,8 +22,7 @@ class WpCommentmeta(models.Model):
     meta_value = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = 'wp_commentmeta'
+        abstract = True
 
 
 class WpComments(models.Model):
@@ -44,8 +43,7 @@ class WpComments(models.Model):
     user_id = models.BigIntegerField()
 
     class Meta:
-        managed = False
-        db_table = 'wp_comments'
+        abstract = True
 
 
 class WpLinks(models.Model):
@@ -64,8 +62,7 @@ class WpLinks(models.Model):
     link_rss = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
-        db_table = 'wp_links'
+        abstract = True
 
 
 class WpOptions(models.Model):
@@ -75,8 +72,7 @@ class WpOptions(models.Model):
     autoload = models.CharField(max_length=20)
 
     class Meta:
-        managed = False
-        db_table = 'wp_options'
+        abstract = True
 
 
 class WpPostmeta(models.Model):
@@ -86,8 +82,7 @@ class WpPostmeta(models.Model):
     meta_value = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = 'wp_postmeta'
+        abstract = True
 
 
 class WpPosts(models.Model):
@@ -116,8 +111,7 @@ class WpPosts(models.Model):
     comment_count = models.BigIntegerField()
 
     class Meta:
-        managed = False
-        db_table = 'wp_posts'
+        abstract = True
 
 
 class WpTermRelationships(models.Model):
@@ -126,9 +120,7 @@ class WpTermRelationships(models.Model):
     term_order = models.IntegerField()
 
     class Meta:
-        managed = False
-        db_table = 'wp_term_relationships'
-        unique_together = (('object_id', 'term_taxonomy_id'),)
+        abstract = True
 
 
 class WpTermTaxonomy(models.Model):
@@ -140,9 +132,7 @@ class WpTermTaxonomy(models.Model):
     count = models.BigIntegerField()
 
     class Meta:
-        managed = False
-        db_table = 'wp_term_taxonomy'
-        unique_together = (('term_id', 'taxonomy'),)
+        abstract = True
 
 
 class WpTerms(models.Model):
@@ -152,29 +142,24 @@ class WpTerms(models.Model):
     term_group = models.BigIntegerField()
 
     class Meta:
-        managed = False
-        db_table = 'wp_terms'
+        abstract = True
 
 
 class WpUsermeta(models.Model):
-    umeta_id = models.BigIntegerField(primary_key=True)
+    # umeta_id = models.BigIntegerField(primary_key=True)
+    umeta_id = models.BigAutoField(primary_key=True)
     # user_id = models.BigIntegerField()
     user = models.ForeignKey('WpUsers', db_column='user_id')
     meta_key = models.CharField(max_length=255, blank=True, null=True)
     meta_value = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
-        db_table = 'wp_usermeta'
-
-    def __unicode__(self):
-        return u"{} - {}:{}".format(
-            self.user and self.user.__unicode__(),
-            self.meta_key, self.meta_value)
+        abstract = True
 
 
 class WpUsers(models.Model):
-    id = models.BigIntegerField(db_column='ID', primary_key=True)
+    # id = models.BigIntegerField(db_column='ID', primary_key=True)
+    id = models.BigAutoField(db_column='ID', primary_key=True)
     user_login = models.CharField(max_length=60)
     user_pass = models.CharField(max_length=64)
     user_nicename = models.CharField(max_length=50)
@@ -186,13 +171,4 @@ class WpUsers(models.Model):
     display_name = models.CharField(max_length=250)
 
     class Meta:
-        managed = False
-        db_table = 'wp_users'
-
-    def __unicode__(self):
-        return self.user_login
-
-    def set_meta(self, meta_key, meta_value):
-        if self.wpusermeta_set.filter(meta_key=meta_key).update(meta_value=meta_value) < 1:      # NOQA
-            self.wpusermeta_set.create(
-                meta_key=meta_key, meta_value=meta_value)
+        abstract = True
