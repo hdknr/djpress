@@ -1,15 +1,15 @@
+# Framework
 Django
+
+# Database
 MySQL-python
 pysqlite
+
+# Docs
 Sphinx
-Werkzeug
-jcconv
+
+# Tools
 django-extensions
-Pillow
-requests
-furl
-pykf
-Markdown
-ordereddict
-gunicorn
+
+# PHP
 phpserialize
