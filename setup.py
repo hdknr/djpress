@@ -40,7 +40,7 @@ def install():
         long_description=read('README.rst'),
         scripts=glob.glob('scripts/*.py'),
         install_requires=requires(),
-        dependency_links=deps(),
+        dependency_links=[],
     )
 
 import sys
@@ -60,11 +60,6 @@ def read(fname):
 def lines(fname):
     return [line.strip()
             for line in open(os.path.join(BASE_DIR, fname)).readlines()]
-
-
-def deps(i=1):
-    return [DEP.search(r).group(i) for r in lines("requirements/links.txt")]
-
 
 def requires():
     return lines("requirements/install.txt") + deps(2)
