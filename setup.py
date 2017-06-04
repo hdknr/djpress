@@ -61,8 +61,9 @@ def lines(fname):
     return [line.strip()
             for line in open(os.path.join(BASE_DIR, fname)).readlines()]
 
+
 def requires():
-    return lines("requirements/install.txt") + deps(2)
+    return lines("requirements/install.txt")
 
 if __name__ == '__main__':
     install()
