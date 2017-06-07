@@ -50,7 +50,7 @@ class WpPostmeta(wordpress.WpPostmeta):
         db_table = 'wp_postmeta'
 
 
-class WpPosts(wordpress.WpPosts):
+class WpPosts(wordpress.WpPosts, methods.WpPosts):
 
     class Meta:
         managed = False

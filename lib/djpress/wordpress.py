@@ -75,16 +75,6 @@ class WpOptions(models.Model):
         abstract = True
 
 
-class WpPostmeta(models.Model):
-    meta_id = models.BigIntegerField(primary_key=True)
-    post_id = models.BigIntegerField()
-    meta_key = models.CharField(max_length=255, blank=True, null=True)
-    meta_value = models.TextField(blank=True, null=True)
-
-    class Meta:
-        abstract = True
-
-
 class WpPosts(models.Model):
     id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.     # NOQA
     post_author = models.BigIntegerField()
@@ -109,6 +99,18 @@ class WpPosts(models.Model):
     post_type = models.CharField(max_length=20)
     post_mime_type = models.CharField(max_length=100)
     comment_count = models.BigIntegerField()
+
+    class Meta:
+        abstract = True
+
+
+class WpPostmeta(models.Model):
+    # meta_id = models.BigIntegerField(primary_key=True)
+    meta_id = models.BigAutoField(primary_key=True)
+    # post_id = models.BigIntegerField()
+    post = models.ForeignKey('WpPosts', db_column='post_id')
+    meta_key = models.CharField(max_length=255, blank=True, null=True)
+    meta_value = models.TextField(blank=True, null=True)
 
     class Meta:
         abstract = True

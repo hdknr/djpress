@@ -37,3 +37,12 @@ class WpUsers(object):
     @classmethod
     def set_session(cls, request, wpuser_id):
         sessions.set_wp_user(request, wpuser_id)
+
+
+class WpPosts(object):
+
+    def add_thumbnail(self,  id):
+        meta_key = '_thumbnail_id'
+        thumbnail, created = self.wppostmeta_set.get_or_create(
+            meta_key=meta_key, meta_value=id)
+        return thumbnail
