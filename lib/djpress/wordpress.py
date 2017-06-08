@@ -76,7 +76,8 @@ class WpOptions(models.Model):
 
 
 class WpPosts(models.Model):
-    id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.     # NOQA
+    # id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.     # NOQA
+    id = models.BigAutoField(primary_key=True, db_column='ID')
     post_author = models.BigIntegerField()
     post_date = models.DateTimeField()
     post_date_gmt = models.DateTimeField()
