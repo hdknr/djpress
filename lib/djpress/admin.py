@@ -59,4 +59,9 @@ class WpOptionsAdmin(admin.ModelAdmin):
     list_filter = ['autoload', ]
     search_fields = ['option_name', 'option_value', ]
 
+
+class WpPostmetaAdmin(admin.ModelAdmin):
+    raw_id_fields = ['post', ]
+
+
 register(__name__, globals())
