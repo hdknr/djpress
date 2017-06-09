@@ -75,6 +75,14 @@ class WpPosts(object):
         meta_key = '_thumbnail_id'
         return self.set_meta(meta_key, id)
 
+    def set_thumbnail(self, image_url, image):
+        try:
+            post = xmlrpc.upload_image(image_url, image)
+            self.set_meta('_thumbnail_id', post['id'])
+        except:
+            logger.error(traceback.format_exc())
+            print traceback.format_exc()
+
     def set_meta(self, meta_key, meta_value):
         meta = self.get_meta(meta_key)
         if meta:
