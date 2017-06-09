@@ -49,10 +49,15 @@ class WpUsermetaAdmin(admin.ModelAdmin):
     list_filter = ('meta_key', )
 
 
+class WpPostmetaAdminInline(admin.TabularInline):
+    model = models.WpPostmeta
+
+
 class WpPostsAdmin(admin.ModelAdmin):
     date_hierarchy = 'post_modified'
     list_filter = ['post_type', 'post_mime_type', 'post_status', ]
     list_excludes = ['post_date_gmt', 'post_modified_gmt', ]
+    inlines = [WpPostmetaAdminInline, ]
 
 
 class WpOptionsAdmin(admin.ModelAdmin):
