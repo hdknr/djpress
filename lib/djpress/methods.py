@@ -13,7 +13,9 @@ class WpUsers(object):
                 meta_key=meta_key, meta_value=meta_value)
 
     def set_metas_for(
-            self, djuser, display_name=None, user_level=None, **kwargs):
+            self, djuser, display_name=None,
+            description=None, user_level=None, **kwargs):
+
         if not user_level:
             user_level = 10 if djuser.is_superuser else 1
 
@@ -25,7 +27,10 @@ class WpUsers(object):
         self.set_meta('wp_user_level',  user_level)
         self.set_meta('first_name',  djuser.first_name)
         self.set_meta('last_name',  djuser.last_name)
-        self.set_meta('nickname',  display_name)
+        self.set_meta('show_admin_bar_front', False)
+
+        self.set_nickname(display_name)
+        self.set_description(description)
 
         if user_level == 10:
             cap = {'contributer': True, 'administrator': True, }
@@ -37,6 +42,15 @@ class WpUsers(object):
     @classmethod
     def set_session(cls, request, wpuser_id):
         sessions.set_wp_user(request, wpuser_id)
+
+    def set_nickname(self, nickname):
+        self.set_meta('nickname', nickname)
+
+    def set_description(self, description):
+        self.set_meta('description', description)
+
+    def set_avatar(self, post_id):
+        self.set_meta('wp_user_avatar', post_id)
 
 
 class WpPosts(object):
