@@ -43,7 +43,7 @@ class WpOptions(wordpress.WpOptions):
         db_table = 'wp_options'
 
 
-class WpPostmeta(wordpress.WpPostmeta):
+class WpPostmeta(wordpress.WpPostmeta, methods.WpPostmeta):
 
     class Meta:
         managed = False

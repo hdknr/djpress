@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from __future__ import unicode_literals
+from django.utils.functional import cached_property
 import phpserialize
 from . import sessions
 
@@ -11,6 +12,9 @@ class WpUsers(object):
         if self.wpusermeta_set.filter(meta_key=meta_key).update(meta_value=meta_value) < 1:      # NOQA
             self.wpusermeta_set.create(
                 meta_key=meta_key, meta_value=meta_value)
+
+    def get_meta(self, meta_key):
+        return self.wpusermeta_set.filter(meta_key=meta_key).first()
 
     def set_metas_for(
             self, djuser, display_name=None,
@@ -57,6 +61,24 @@ class WpPosts(object):
 
     def add_thumbnail(self,  id):
         meta_key = '_thumbnail_id'
-        thumbnail, created = self.wppostmeta_set.get_or_create(
-            meta_key=meta_key, meta_value=id)
-        return thumbnail
+        return self.set_meta(meta_key, id)
+
+    def set_meta(self, meta_key, meta_value):
+        meta = self.get_meta(meta_key)
+        if meta:
+            meta.meta_value = meta_value
+            meta.save()
+            return meta
+        else:
+            return self.wppostmeta_set.create(
+                meta_key=meta_key, meta_value=meta_value)
+
+    def get_meta(self, meta_key):
+        return self.wppostmeta_set.filter(meta_key=meta_key).first()
+
+
+class WpPostmeta(object):
+
+    @cached_property
+    def value_dict(self):
+        return self.meta_value and phpserialize.loads(self.meta_value) or {}
