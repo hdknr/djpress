@@ -20,6 +20,9 @@ class WpUsers(object):
     def get_meta(self, meta_key):
         return self.wpusermeta_set.filter(meta_key=meta_key).first()
 
+    def delete_meta(self, meta_key):
+        self.wpusermeta_set.filter(meta_key=meta_key).delete()
+
     def set_metas_for(
             self, djuser, display_name=None,
             description=None, user_level=None, **kwargs):
@@ -58,6 +61,10 @@ class WpUsers(object):
         self.set_meta('description', description)
 
     def set_avatar(self, image_url, image):
+        if not image_url:
+            self.delete_meta('wp_user_avatar')
+            return
+
         try:
             post = xmlrpc.upload_image(image_url, image)
             self.set_meta('wp_user_avatar', post['id'])
