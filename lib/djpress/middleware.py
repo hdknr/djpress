@@ -15,9 +15,18 @@ class Middleware(Base):
         ''' if user has been logged out, no session data , so no 'wp_user'
         '''
         wp_user = request.session.get('wp_user', None)
-        response.set_cookie('WP_USER', wp_user or '')
-        try:
-            response.set_cookie('USER_ID', request.user.id)
-        except:
-            pass
+
+        if wp_user and request.user.is_authenticated():
+            response.set_cookie('WP_USER', wp_user or '')
+            try:
+                response.set_cookie('USER_ID', request.user.id)
+            except:
+                pass
+        else:
+            for i in ['WP_USER', 'USER_ID']:
+                try:
+                    response.delete_cookie(i)
+                except:
+                    pass
+
         return response
