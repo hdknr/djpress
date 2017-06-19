@@ -43,9 +43,10 @@ class WpUsers(object):
         self.set_nickname(display_name)
         self.set_description(description)
 
+        cap = {'subscriber': True}
         if user_level == 10:
             cap = {'contributer': True, 'administrator': True, }
-            self.set_meta('wp_capabilities', phpserialize.dumps(cap))
+        self.set_meta('wp_capabilities', phpserialize.dumps(cap))
 
         for key, value in kwargs.items():
             self.set_meta(key, value)
