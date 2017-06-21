@@ -6,6 +6,12 @@ from django.db import transaction
 import uuid
 
 
+def wp_nicename(djuser):
+    return u"{}-{}".format(
+        djuser.id,
+        djuser.email.replace('@', '').replace('.',  '-'), )
+
+
 class WpUsersrQuerySet(models.QuerySet):
 
     @transaction.atomic
@@ -20,7 +26,7 @@ class WpUsersrQuerySet(models.QuerySet):
 
         wpuser = self.create(
             user_login=djuser.username,
-            user_nicename=djuser.username,
+            user_nicename=wp_nicename(djuser),
             user_status=not djuser.is_active and 1 or 0,
             user_pass=uuid.uuid1().hex,
             user_registered=djuser.date_joined,
