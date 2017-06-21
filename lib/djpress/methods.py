@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from django.utils.functional import cached_property
 import phpserialize
-from . import sessions, xmlrpc
+from . import sessions, xmlrpc, signals
 from logging import getLogger
 import traceback
 
@@ -71,7 +71,6 @@ class WpUsers(object):
             self.set_meta('wp_user_avatar', post['id'])
         except:
             logger.error(traceback.format_exc())
-            print traceback.format_exc()
 
     def get_avatar(self):
         return self.get_meta('wp_user_avatar')
@@ -87,9 +86,10 @@ class WpPosts(object):
         try:
             post = xmlrpc.upload_image(image_url, image)
             self.set_meta('_thumbnail_id', post['id'])
+            signals.thumbnail_uploaded.send(
+                sender=type(self), instance=self, response=post)
         except:
             logger.error(traceback.format_exc())
-            print traceback.format_exc()
 
     def set_meta(self, meta_key, meta_value):
         meta = self.get_meta(meta_key)
