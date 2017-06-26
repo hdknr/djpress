@@ -16,7 +16,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
-class PositiveBigIntegerField(models.BigIntegerField):
+class PositiveBigAutoField(models.BigAutoField):
     empty_strings_allowed = False
     description = _("Big (8 byte) positive integer")
 
@@ -31,7 +31,7 @@ class PositiveBigIntegerField(models.BigIntegerField):
         defaults = {'min_value': 0,
                     'max_value': models.BigIntegerField.MAX_BIGINT * 2 - 1}
         defaults.update(kwargs)
-        return super(PositiveBigIntegerField, self).formfield(**defaults)
+        return super(PositiveBigAutoField, self).formfield(**defaults)
 
 
 class WpCommentmeta(models.Model):
@@ -97,7 +97,7 @@ class WpOptions(models.Model):
 class WpPosts(models.Model):
     # id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.     # NOQA
     # id = models.BigAutoField(primary_key=True, db_column='ID')
-    id = PositiveBigIntegerField(primary_key=True, db_column='ID')
+    id = PositiveBigAutoField(primary_key=True, db_column='ID')
     post_author = models.BigIntegerField()
     post_date = models.DateTimeField()
     post_date_gmt = models.DateTimeField()
