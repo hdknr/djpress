@@ -13,6 +13,25 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+
+class PositiveBigIntegerField(models.BigIntegerField):
+    empty_strings_allowed = False
+    description = _("Big (8 byte) positive integer")
+
+    def db_type(self, connection):
+        """
+        Returns MySQL-specific column data type. Make additional checks
+        to support other backends.
+        """
+        return 'bigint UNSIGNED'
+
+    def formfield(self, **kwargs):
+        defaults = {'min_value': 0,
+                    'max_value': models.BigIntegerField.MAX_BIGINT * 2 - 1}
+        defaults.update(kwargs)
+        return super(PositiveBigIntegerField, self).formfield(**defaults)
 
 
 class WpCommentmeta(models.Model):
@@ -77,7 +96,8 @@ class WpOptions(models.Model):
 
 class WpPosts(models.Model):
     # id = models.BigIntegerField(db_column='ID', primary_key=True)  # Field name made lowercase.     # NOQA
-    id = models.BigAutoField(primary_key=True, db_column='ID')
+    # id = models.BigAutoField(primary_key=True, db_column='ID')
+    id = PositiveBigIntegerField(primary_key=True, db_column='ID')
     post_author = models.BigIntegerField()
     post_date = models.DateTimeField()
     post_date_gmt = models.DateTimeField()
