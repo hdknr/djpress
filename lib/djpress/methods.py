@@ -82,7 +82,7 @@ class WpPosts(object):
         meta_key = '_thumbnail_id'
         return self.set_meta(meta_key, id)
 
-    def delete_thumnail(self):
+    def delete_thumbnail(self):
         self.wppostmeta_set.filter(meta_key='_thumbnail_id').delete()
 
     def set_thumbnail(self, image_url, image):
