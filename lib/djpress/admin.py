@@ -67,6 +67,7 @@ class WpOptionsAdmin(admin.ModelAdmin):
 
 class WpPostmetaAdmin(admin.ModelAdmin):
     raw_id_fields = ['post', ]
+    list_filter = ['meta_key', ]
 
 
 register(__name__, globals())
