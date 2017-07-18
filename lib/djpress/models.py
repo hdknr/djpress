@@ -57,7 +57,7 @@ class WpPosts(wordpress.WpPosts, methods.WpPosts):
         db_table = 'wp_posts'
 
     def __unicode__(self):
-        return self.post_title
+        return u"{}({})".format(self.post_title, self.id)
 
 
 class WpTermRelationships(wordpress.WpTermRelationships):
