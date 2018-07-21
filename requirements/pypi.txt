@@ -4,6 +4,9 @@ Django
 # Database
 mysqlclient
 
+# REST
+requests
+
 # Tools
 django-extensions
 
