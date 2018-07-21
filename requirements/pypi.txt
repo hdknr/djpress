@@ -2,11 +2,7 @@
 Django
 
 # Database
-MySQL-python
-pysqlite
-
-# Docs
-Sphinx
+mysqlclient
 
 # Tools
 django-extensions
